@@ -336,6 +336,9 @@ class _HomeState extends State<Home> {
                     String _text = await translate(_targetLanguage, text.text);
                     setState(() {
                       output = _text;
+                      if (output.isEmpty) {
+                        showMessage('Make sure that you have internet connection.', 'Something went wrong');
+                      }
                     });
                   },
                   child: const Text(
@@ -375,7 +378,31 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
+              ),
+              SizedBox(
+                height: 40,
+                child: InkWell(
+                  onTap: () async {
+                    await Clipboard.setData(ClipboardData(text: output));
+                  },
+                  splashColor: Colors.grey.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(Icons.content_copy, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Copy',
+                        style: TextStyle(color: isDarkMode ? Colors.grey : Colors.black87),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Row(
                 children: [

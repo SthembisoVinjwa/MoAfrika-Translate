@@ -12,7 +12,7 @@ class TranslationService {
       final response = await http.post(Uri.parse(apiUrl), body: {
         'q': text,
         'target': targetLanguage,
-      });
+      }).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         final translatedText = jsonDecode(response.body)['data']['translations'][0]['translatedText'];
@@ -21,7 +21,7 @@ class TranslationService {
         throw Exception('Failed to translate text. HTTP status code: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('An error occurred during translation: $e');
+      return '';
     }
   }
 }
