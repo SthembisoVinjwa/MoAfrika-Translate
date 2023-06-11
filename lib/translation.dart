@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 class TranslationService {
   Future<String> translate(String text, String targetLanguage) async {
     try {
-      const apiKey = 'AIzaSyC39CSBMm1irl7x_x5iTYbOmaeuH6Ti31o';
-      const apiUrl =
+      final apiKey = dotenv.env['API_KEY'];
+      final apiUrl =
           'https://translation.googleapis.com/language/translate/v2?key=$apiKey';
 
       final response = await http.post(Uri.parse(apiUrl), body: {

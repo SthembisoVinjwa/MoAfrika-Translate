@@ -35,6 +35,13 @@ class _HomeState extends State<Home> {
 
     languages.add(
       const DropdownMenuItem(
+        value: 'en',
+        child: Text('English'),
+      ),
+    );
+
+    languages.add(
+      const DropdownMenuItem(
         value: 'zu',
         child: Text('Zulu'),
       ),
