@@ -1,11 +1,14 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:moafrika_translate/provider/provider.dart';
-import 'package:moafrika_translate/translation.dart';
+import 'package:moafrika_translate/api/translation.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'api/speech.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,8 +23,16 @@ class _HomeState extends State<Home> {
   String _targetLanguage = 'ts';
   String output = '';
   final text = TextEditingController();
+  bool isListening = false;
+  int navIndex = 0;
 
   List<DropdownMenuItem<String>> languages = [];
+
+  final screens = <Widget>[
+    Center(child: Text('Affiliate'),),
+    Center(child: Text('Support'),),
+    Center(child: Text('Preferences'),),
+  ];
 
   List<DropdownMenuItem<String>> getLanguages() {
     List<DropdownMenuItem<String>> languages = [];
@@ -178,95 +189,159 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MainProvider>(context);
-
     bool isDarkMode = provider.isDarkMode;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor:
-            isDarkMode ? Theme.of(context).cardColor : Colors.white,
-        title: Column(
-          children: [
-            Image.asset(
-              'assets/africa.png',
-              width: 24,
-              height: 24,
-              color: Colors.green,
-            ),
-            Text(
-              'MoAfrika-Translate',
-              style: TextStyle(
-                  fontSize: 14,
-                  color: isDarkMode ? Colors.white : Colors.green),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_horiz,
-              color: isDarkMode ? Colors.white : Colors.black,
-            ),
-            onSelected: (value) {
-              if (value == 'about') {
-                // Handle "About" menu item
-                showAboutDialog(
-                  context: context,
-                  applicationIcon: Image.asset(
-                    'assets/africa.png',
-                    width: 24,
-                    height: 24,
-                    color: Colors.green,
-                  ),
-                  applicationName: 'MoAfrika-Translate',
-                  children: [
-                    const Text(
-                        'An application for translating African languages.\n\nCreated by Sthembiso Vinjwa.\n'),
-                    const Text('App icon credit: Freepik')
-                  ],
-                  applicationVersion: '1.0.0',
-                  // Add more information as needed
-                );
-              } else if (value == 'close') {
-                // Handle "Close" menu item
-                SystemNavigator.pop();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem<String>(
-                value: 'about',
-                child: ListTile(
-                  leading: Icon(Icons.info),
-                  title: Text('About'),
-                ),
+      appBar: PreferredSize(
+        preferredSize: Size(MediaQuery.of(context).size.width-20, 60),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: AppBar(
+            backgroundColor: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20.0),
               ),
-              const PopupMenuItem<String>(
-                value: 'close',
-                child: ListTile(
-                  leading: Icon(Icons.exit_to_app_rounded),
-                  title: Text('Close'),
+            ),
+            title: Column(
+              children: [
+                Image.asset(
+                  'assets/africa.png',
+                  width: 24,
+                  height: 24,
+                  color: Colors.green,
                 ),
+                /*Text(
+                  'MoAfrika-Translate',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),*/
+              ],
+            ),
+            centerTitle: true,
+            actions: [
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                ),
+                onSelected: (value) {
+                  if (value == 'about') {
+                    // Handle "About" menu item
+                    showAboutDialog(
+                      context: context,
+                      applicationIcon: Image.asset(
+                        'assets/africa.png',
+                        width: 24,
+                        height: 24,
+                        color: Colors.green,
+                      ),
+                      applicationName: 'MoAfrika-Translate',
+                      children: [
+                        const Text('An application for translating African languages.\n\nCreated by Sthembiso Vinjwa.\n'),
+                        const Text('App icon credit: Freepik'),
+                      ],
+                      applicationVersion: '1.0.0',
+                      // Add more information as needed
+                    );
+                  } else if (value == 'close') {
+                    // Handle "Close" menu item
+                    SystemNavigator.pop();
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem<String>(
+                    value: 'about',
+                    child: ListTile(
+                      leading: Icon(Icons.info),
+                      title: Text('About'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'close',
+                    child: ListTile(
+                      leading: Icon(Icons.exit_to_app_rounded),
+                      title: Text('Close'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
-      body: Container(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+              width: 1.0,
+            ),
+          ),
+          child: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              backgroundColor: Colors.transparent,
+              indicatorColor: isDarkMode ? Theme.of(context).cardColor : Colors.white,
+              labelTextStyle: MaterialStateProperty.all(
+                TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
+            child: NavigationBar(
+              labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+              animationDuration: const Duration(seconds: 2),
+              height: 60,
+              selectedIndex: navIndex,
+              onDestinationSelected: (index) => setState(() => navIndex = index),
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.home, color: Colors.green),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.local_offer, color: Colors.green),
+                  label: 'Affiliate',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.volunteer_activism, color: Colors.green),
+                  label: 'Support',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.dashboard, color: Colors.green),
+                  label: 'Preferences',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: navIndex == 0 ? Container(
         padding: const EdgeInsets.all(0.0),
         alignment: Alignment.center,
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           margin: const EdgeInsets.all(12),
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
               const Text(
-                  'Enter the text you wish to translate, choose the language, and click Translate'),
+                  'Enter the Text/Voice input to translate, choose the language, and click Translate',
+              ),
               const SizedBox(
                 height: 10,
               ),
               Container(
-                height: 140,
+                height: 120,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
@@ -285,6 +360,59 @@ class _HomeState extends State<Home> {
                   maxLines: 5, // Adjust the maximum number of lines as needed
                 ),
               ),
+              SizedBox(
+                height: 40,
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  InkWell(
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      setState(() {
+                        text.text = '';
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.delete,
+                          color: Colors.grey,
+                          size: 25,
+                        ),
+                        Text('Clear',
+                            style: TextStyle(
+                                color:
+                                    isDarkMode ? Colors.grey : Colors.black87)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  InkWell(
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: toggleRecording,
+                    child: Row(
+                      children: [
+                        AvatarGlow(
+                            animate: isListening,
+                            endRadius: 15,
+                            child: Icon(
+                              isListening ? Icons.mic : Icons.mic_none,
+                              color: Colors.grey,
+                              size: 25,
+                            )),
+                        const SizedBox(width: 2),
+                        Text(
+                          'Voice input',
+                          style: TextStyle(
+                              color: isDarkMode ? Colors.grey : Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -295,6 +423,7 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: 45,
                 child: DropdownButtonFormField<String>(
+                  style: const TextStyle(fontSize: 14),
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(5),
                     enabledBorder: OutlineInputBorder(
@@ -344,7 +473,9 @@ class _HomeState extends State<Home> {
                     setState(() {
                       output = _text;
                       if (output.isEmpty) {
-                        showMessage('Make sure that you have internet connection.', 'Something went wrong');
+                        showMessage(
+                            'Make sure that you have internet connection.',
+                            'Something went wrong');
                       }
                     });
                   },
@@ -358,7 +489,7 @@ class _HomeState extends State<Home> {
                 height: 20,
               ),
               Container(
-                height: 140,
+                height: 120,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
@@ -389,31 +520,8 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(
                 height: 40,
-                child: InkWell(
-                  onTap: () async {
-                    await Clipboard.setData(ClipboardData(text: output));
-                  },
-                  splashColor: Colors.grey.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(Icons.content_copy, color: Colors.grey),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Copy',
-                        style: TextStyle(color: isDarkMode ? Colors.grey : Colors.black87),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Text('Dark mode '),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  const Text('Dark mode'),
                   Switch(
                     activeTrackColor: Colors.grey,
                     activeColor: Colors.black87,
@@ -426,6 +534,29 @@ class _HomeState extends State<Home> {
                       });
                     },
                   ),
+                  Spacer(),
+                  InkWell(
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () async {
+                      await Clipboard.setData(ClipboardData(text: output));
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.content_copy, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Copy',
+                          style: TextStyle(
+                              color: isDarkMode ? Colors.grey : Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+              /*Row(
+                children: [
                   SizedBox(
                     height: 40,
                     child: ElevatedButton.icon(
@@ -453,9 +584,9 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ],
-              ),
+              ),*/
               const SizedBox(
-                height: 20,
+                height: 5,
               ),
               if (_isAdLoaded)
                 SizedBox(
@@ -468,9 +599,17 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-      ),
+      ) :
+      screens[navIndex-1],
     );
   }
+
+  Future toggleRecording() => SpeechApi.toggleRecording(
+        onResult: (text) => setState(() => this.text.text = text),
+        onListening: (isListening) {
+          setState(() => this.isListening = isListening);
+        },
+      );
 
   void showMessage(String message, String title) {
     AlertDialog inputFail = AlertDialog(
@@ -478,7 +617,7 @@ class _HomeState extends State<Home> {
         title,
         //style: TextStyle(color: global.aColor),
       ),
-      content: Text(message, style: TextStyle()),
+      content: Text(message, style: const TextStyle()),
       actions: [
         ElevatedButton(
             style: ButtonStyle(
@@ -487,7 +626,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text(
+            child: const Text(
               'Ok',
               style: TextStyle(),
             )),

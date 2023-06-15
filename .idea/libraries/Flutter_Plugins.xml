@@ -12,6 +12,8 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter-4.2.2" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.35" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.4.4" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/speech_to_text-6.1.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/speech_to_text_macos-1.0.2" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

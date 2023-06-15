@@ -41,6 +41,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   animated_text_kit: ^4.2.2
   google_mobile_ads: ^3.0.0
+  speech_to_text:
+  avatar_glow:
 
 flutter_launcher_icons:
   android: true
