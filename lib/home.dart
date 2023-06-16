@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:moafrika_translate/provider/provider.dart';
 import 'package:moafrika_translate/api/translation.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:moafrika_translate/screens/support.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +31,7 @@ class _HomeState extends State<Home> {
 
   final screens = <Widget>[
     Center(child: Text('Affiliate'),),
-    Center(child: Text('Support'),),
+    SupportPage(),
     Center(child: Text('Preferences'),),
   ];
 
@@ -193,7 +194,7 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(MediaQuery.of(context).size.width-20, 60),
+        preferredSize: Size(MediaQuery.of(context).size.width-20, 55),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: AppBar(
@@ -211,21 +212,22 @@ class _HomeState extends State<Home> {
                   height: 24,
                   color: Colors.green,
                 ),
-                /*Text(
+                Text(
                   'MoAfrika-Translate',
                   style: TextStyle(
                     fontSize: 14,
+                    fontStyle: FontStyle.italic,
                     color: isDarkMode ? Colors.white : Colors.black,
                   ),
-                ),*/
+                ),
               ],
             ),
             centerTitle: true,
             actions: [
               PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: isDarkMode ? Colors.white : Colors.black,
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.green,
                 ),
                 onSelected: (value) {
                   if (value == 'about') {
@@ -303,8 +305,8 @@ class _HomeState extends State<Home> {
               onDestinationSelected: (index) => setState(() => navIndex = index),
               destinations: const [
                 NavigationDestination(
-                  icon: Icon(Icons.home, color: Colors.green),
-                  label: 'Home',
+                  icon: Icon(Icons.translate, color: Colors.green),
+                  label: 'Translation',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.local_offer, color: Colors.green),
@@ -524,7 +526,7 @@ class _HomeState extends State<Home> {
                   const Text('Dark mode'),
                   Switch(
                     activeTrackColor: Colors.grey,
-                    activeColor: Colors.black87,
+                    activeColor: Theme.of(context).canvasColor,
                     value: Provider.of<MainProvider>(context, listen: false)
                         .isDarkMode,
                     onChanged: (bool value) {
@@ -555,36 +557,6 @@ class _HomeState extends State<Home> {
                   ),
                 ]),
               ),
-              /*Row(
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(
-                        Icons.coffee_rounded,
-                        color: Colors.white,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0.0,
-                        foregroundColor: Colors.grey,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: Colors.green),
-                          borderRadius: BorderRadius.circular(8),
-                        ), // Text color
-                      ),
-                      onPressed: () async {
-                        _launchURL('https://www.buymeacoffee.com/vinjwacr7e');
-                      },
-                      label: const Text(
-                        'Buy me a coffee',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),*/
               const SizedBox(
                 height: 5,
               ),
@@ -638,14 +610,5 @@ class _HomeState extends State<Home> {
         return inputFail;
       },
     );
-  }
-
-  void _launchURL(String url) async {
-    Uri site = Uri.parse(url);
-    if (await canLaunchUrl(site)) {
-      await launchUrl(site);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
