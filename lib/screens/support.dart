@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../provider/provider.dart';
 
 class SupportPage extends StatefulWidget {
-
   SupportPage({Key? key}) : super(key: key);
 
   @override
@@ -127,12 +126,12 @@ class _SupportPageState extends State<SupportPage> {
                     style: ElevatedButton.styleFrom(
                       elevation: 0.0,
                       foregroundColor: Colors.grey,
-                      backgroundColor: _isAdLoaded ? (isDarkMode ? Colors.green : Colors.white) : Colors.grey,
+                      backgroundColor: _isAdLoaded ? (isDarkMode ? Colors.green : Colors.white) : (isDarkMode ? Colors.grey : Colors.grey.shade700),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
-                            color: _isAdLoaded ? (isDarkMode ? Colors.green : Colors.white)  : Colors.grey),
+                            color: _isAdLoaded ? (isDarkMode ? Colors.green : Colors.white)  : (isDarkMode ? Colors.grey : Colors.grey.shade700)),
                         borderRadius: BorderRadius.circular(8),
                       ), // Text color
                     ),
@@ -149,6 +148,16 @@ class _SupportPageState extends State<SupportPage> {
                     ),
                   ),
                 ),
+                SizedBox(width: 10,),
+                if (!_isAdLoaded)
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      color: isDarkMode ? Colors.green : Colors.white,
+                    ),
+                  )
               ],
             ),
             const SizedBox(height: 20),

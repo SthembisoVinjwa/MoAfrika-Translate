@@ -33,8 +33,9 @@ dependencies:
 
   http: ^0.13.3
   flutter_dotenv: ^5.0.0
-  provider: ^6.0.5
+  provider:
   url_launcher: ^6.0.0
+  path_provider:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -43,6 +44,8 @@ dependencies:
   google_mobile_ads: ^3.0.0
   speech_to_text:
   avatar_glow:
+  settings_ui:
+  intl: ^0.18.1
 
 flutter_launcher_icons:
   android: true
