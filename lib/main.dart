@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'MoAfrika-Translate',
             theme: ThemeData(
-              fontFamily: '',
+              unselectedWidgetColor: Colors.white,
               brightness: provider.isDarkMode ? Brightness.dark : Brightness.light,
               primarySwatch: Colors.green,
               primaryColor: Colors.green,

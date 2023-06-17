@@ -176,11 +176,12 @@ class _PreferencesState extends State<Preferences> {
                 ),
                 Flexible(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 36.0),
+                    padding: const EdgeInsets.only(left: 36.0),
                     // Adjust the padding value as needed
                     child: ListView.builder(
                       itemCount: checkListItems.length,
                       itemBuilder: (context, index) => CheckboxListTile(
+                        checkColor: Colors.white,
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: EdgeInsets.zero,
                         dense: true,

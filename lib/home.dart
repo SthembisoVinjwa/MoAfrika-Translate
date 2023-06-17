@@ -34,9 +34,6 @@ class _HomeState extends State<Home> {
   List<DropdownMenuItem<String>> languages = [];
 
   final screens = <Widget>[
-    const Center(
-      child: Text('Affiliate'),
-    ),
     SupportPage(),
     const Preferences(),
   ];
@@ -282,10 +279,6 @@ class _HomeState extends State<Home> {
                 NavigationDestination(
                   icon: Icon(Icons.translate, color: Colors.green),
                   label: 'Translation',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.local_offer, color: Colors.green),
-                  label: 'Affiliate',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.volunteer_activism, color: Colors.green),
